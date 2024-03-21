@@ -21,7 +21,7 @@ asyncio.get_event_loop().set_debug(True)
 async def generate(request: ChatRequest):
     try:
         response = ask_question(request)
-        return response
+        return response.response
     except Exception as e:
         print(e)
 

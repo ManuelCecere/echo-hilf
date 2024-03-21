@@ -15,7 +15,6 @@ from dotenv import load_dotenv
 
 
 load_dotenv("config/credentials.env")  # This loads the environment variables from .env
-os.environ["OPENAI_API_KEY"] = os.environ["OPENAI_KEY"]
 
 client = OpenAI()
 

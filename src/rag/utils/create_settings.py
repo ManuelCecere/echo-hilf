@@ -12,7 +12,10 @@ from llama_index.llms.anthropic import Anthropic
 from llama_index.llms.openai import OpenAI
 from src.utils.logger import setup_logger
 from llama_index.embeddings.cohere import CohereEmbedding
+from dotenv import load_dotenv
 
+
+load_dotenv("config/credentials.env")  # This loads the environment variables from .env
 logger = setup_logger(__name__)
 openai.api_key = os.environ["OPENAI_KEY"]
 
@@ -24,8 +27,8 @@ def initialize_settings():
     Settings.tokenizer = tokenizer
 
     # Settings.llm = OpenAI("gpt-4-0125-preview", api_key=os.environ["OPENAI_KEY"])
-    Settings.llm = OpenAI("gpt-4-0125-preview", api_key=os.environ["OPENAI_KEY"])
-    #Settings.llm = Anthropic(model="claude-3-haiku-20240307")
+    Settings.llm = OpenAI("gpt-4-turbo-preview", api_key=os.environ["OPENAI_KEY"])
+    # Settings.llm = Anthropic(model="claude-3-haiku-20240307")
 
     # Settings.embed_model = load_baai_embeddings()
 
