@@ -1,0 +1,4 @@
+*.sqlite3 filter=lfs diff=lfs merge=lfs -text
+llama_cache filter=lfs diff=lfs merge=lfs -text
+data/pipeline_storage/llama_cache filter=lfs diff=lfs merge=lfs -text
+data/pipeline_storage/docstore.json filter=lfs diff=lfs merge=lfs -text
