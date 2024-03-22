@@ -20,7 +20,32 @@ Before installing, ensure you have Python 3.8+ installed on your system. Follow 
 
 1. Clone the repository:
 
-```bash
+```
 git clone https://github.com/yourusername/voice-bot-project.git
 cd voice-bot-project
+```
 
+2. Install the required Python packages:
+```
+pip install -r requirements.txt
+```
+3. Set up environment variables for OpenAI API credentials:
+```
+export OPENAI_API_KEY='your_openai_api_key_here
+```
+Usage
+To run the voice bot, you need to start both the Streamlit frontend and FastAPI backend servers.
+
+4. Starting the Backend Server
+Navigate to the project directory and run:
+```
+uvicorn app:app --reload
+```
+This command starts the FastAPI server. Ensure it is running before launching the Streamlit app.
+
+5. Launching the Streamlit App
+In a new terminal window, start the Streamlit frontend by running:
+```
+streamlit run streamlit_app.py
+```
+The Streamlit app should now be accessible in your web browser at http://localhost:8501.
