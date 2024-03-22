@@ -46,6 +46,6 @@ This command starts the FastAPI server. Ensure it is running before launching th
 5. Launching the Streamlit App
 In a new terminal window, start the Streamlit frontend by running:
 ```
-streamlit run streamlit_app.py
+streamlit run frontend/app.py
 ```
 The Streamlit app should now be accessible in your web browser at http://localhost:8501.
