@@ -46,11 +46,13 @@ from typing import List
 #     return elements
 
 
+import re
+
 def unstructured_html_loader(dir_path: str, path: str, url: int) -> List[Element]:
     document_elements = partition_html(
         filename=path
     )
-
+    new_els = []
     # Add custom metadata to each element
     for element in document_elements:
         if not hasattr(element, 'metadata'):
@@ -61,7 +63,10 @@ def unstructured_html_loader(dir_path: str, path: str, url: int) -> List[Element
         new_metadata['file_path'] = path  # Specific file path
         new_metadata['url'] = url
         element.metadata.from_dict(new_metadata)
-
-    return document_elements
-
+        pattern = r'(\n+|\t+|\r+)'
+        element.text = re.sub(pattern, '\n', element.text)
+        element.text = re.sub(pattern, '\n', element.text)
+        if element.text:
+            new_els.append(element)
+    return new_els
 # Using partition_html to ingest HTML content

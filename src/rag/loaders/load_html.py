@@ -32,5 +32,5 @@ def load_and_process(paths: List[str] | str, collection_name: str) -> List[BaseN
 if __name__ == '__main__':
     dirpath = "data/data/"
 
-    nodes = load_and_process(dirpath, 'html_docs')
+    nodes = load_and_process(dirpath, 'html_parsed')
     print("completed")

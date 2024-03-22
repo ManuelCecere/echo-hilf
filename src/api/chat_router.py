@@ -5,7 +5,7 @@ from fastapi.responses import StreamingResponse
 import json
 import openai
 from src.pydantic_models.chat_models import ChatRequest
-from src.rag.inference.query_engine import ask_question, ask_question_stream
+from src.rag.inference.query_engine import ask_question
 from config.config_file import config_obj
 
 
@@ -22,14 +22,5 @@ async def generate(request: ChatRequest):
     try:
         response = ask_question(request)
         return response.response
-    except Exception as e:
-        print(e)
-
-
-@router.post("/generate_stream")
-async def generate_stream(request: ChatRequest):
-    try:
-        response = ask_question_stream(request)
-        return response
     except Exception as e:
         print(e)

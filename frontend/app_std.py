@@ -1,4 +1,3 @@
-from st_audiorec import st_audiorec
 from pathlib import Path
 import streamlit as st
 import logging
@@ -9,12 +8,25 @@ import os
 import requests
 import json
 import time
-from dotenv import load_dotenv
+
 
 logging.basicConfig(level=logging.ERROR)
+from dotenv import load_dotenv
+
+
 load_dotenv("config/credentials.env")  # This loads the environment variables from .env
 
 client = OpenAI()
+
+
+# Initialize session state variables if they don't exist
+if 'transcription_done' not in st.session_state:
+    st.session_state.transcription_done = False
+if 'processing_done' not in st.session_state:
+    st.session_state.processing_done = False
+if 'audio_processed' not in st.session_state:
+    st.session_state['audio_processed'] = False
+
 
 
 def display_audio_properties(audio):
@@ -26,19 +38,23 @@ def display_audio_properties(audio):
     with col3:
         st.metric("Duration", f"{audio.duration_seconds} seconds")
 
+
 def transcribe_audio(audio):
-    audio_bytes = io.BytesIO(audio)
+    audio_bytes = io.BytesIO()
+    audio.export(audio_bytes, format="wav")
     audio_bytes.seek(0)
     try:
         transcription = client.audio.transcriptions.create(
-            model="whisper-1", file=("placeholder.wav", audio_bytes), #prompt= "Hoi und schön dich z'treffe, ich ha e Frag für dich, bitte antwort mir in miner Sproch.",
+            model="whisper-1", file=("placeholder.wav", audio_bytes), prompt= "Hoi und schön dich z'treffe, ich ha e Frag für dich, bitte antwort mir in miner Sproch.",
         )
         return transcription.text
     except Exception as e:
         st.error(f"Failed to transcribe audio: {e}")
         return None
 
+    
 def process_transcription(transcription):
+    start_time = time.time()
     url = 'http://127.0.0.1:8000/api/generate'
     headers = {
         'accept': 'application/json',
@@ -47,11 +63,15 @@ def process_transcription(transcription):
     data = {
         "user_id": "testing",
         "conversation_id": "testing",
-        "question": transcription  # This is the new input from the user
+        "question": transcription
     }
 
     response = requests.post(url, headers=headers, data=json.dumps(data))
+    st.session_state.processing_done = True
+
     if response.status_code == 200:
+        end_time = time.time()
+        print("time for process_transcription: ", start_time-end_time)
         return response.json()
     else:
         st.error("Failed to process transcription through the API.")
@@ -131,15 +151,26 @@ def gather_feedback():
         # Additional instructions or actions based on feedback can be added here
         # For example, asking for detailed feedback, redirecting to a help page, etc.
 
-st.title("🎙️ Audio Chatbot")
-st.subheader("Start a conversation by recording something!")
 
-audio_recorded = st_audiorec()
 
-if audio_recorded is not None:
-    transcription = transcribe_audio(audio_recorded)
-    if transcription:
-        response = client.chat.completions.create(
+
+st.title("🎙️ Audio Recorder")
+st.subheader("Try recording something and see it transcribed!")
+
+audio = audiorecorder("Click to record 🎤", "Click to stop recording ⏹️")
+
+if audio and not st.session_state['audio_processed']:
+    st.session_state['audio_processed'] = True  # Mark that audio was processed this session
+    st.audio(audio.export().read(), format="audio/wav")
+    
+    # with st.expander("Show Audio Properties 📊"):
+    #     display_audio_properties(audio)
+
+    with st.spinner("Transcribing and answering..."):
+        transcription = transcribe_audio(audio)
+        if transcription:
+            st.session_state['transcription_done'] = True
+            response = client.chat.completions.create(
                 model="gpt-3.5-turbo-0125",
                 response_format={"type": "json_object"},
                 messages=[
@@ -153,7 +184,7 @@ if audio_recorded is not None:
                     },
                 ],
             )
-        if "yes" in response.choices[0].message.content.lower():
+            if "yes" in response.choices[0].message.content.lower():
                 st.markdown(
                     """
                     <div style="color: white; background-color: red; border-radius: 8px; padding: 10px; text-align: center;">
@@ -162,20 +193,23 @@ if audio_recorded is not None:
                     """,
                     unsafe_allow_html=True,
                 )
-        display_message(transcription)
-        answer = process_transcription(transcription)
-        if answer:
+            
+            display_message(transcription)
+            answer = process_transcription(transcription)
             display_message(answer, is_user=False)
-            response = client.audio.speech.create(
-            model="tts-1",
-            voice="alloy",
-            input=f"{answer}",
-        )
-            audio_content = response.content
-            st.audio(audio_content, format="audio/mp3")
+            
+
+    # Example Text-to-Speech section
+    #st.subheader("Text-to-Speech Sample 🔊")
+    response = client.audio.speech.create(
+        model="tts-1",
+        voice="alloy",
+        input=f"{answer}",
+    )
+    audio_content = response.content
+    st.audio(audio_content, format="audio/mp3")
     
 
-gather_feedback()
+    gather_feedback()
 
-# Instructions for the user to continue the conversation
-st.write("Record another message to continue the conversation.")
+
