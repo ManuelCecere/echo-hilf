@@ -4,7 +4,10 @@
 
 ## Introduction
 
-This repository hosts the code for a voice-activated customer service bot developed during the 36-hour StartHack hackathon in St.Gallen. It is designed to assist users in navigating the canton of St.Gallen's website through voice commands. The bot utilizes Streamlit for user interaction, FastAPI for backend processes, and leverages OpenAI's API for converting speech to text and vice versa. To answer user queries, it combines Retrieval-Augmented Generation (RAG) with GPT-4 for generating relevant and accurate responses. The RAG process involves creating embeddings using the Cohere API from HTML website content and employing Chroma for vector database management.
+This repository hosts the code for a voice-activated customer service bot developed during the 36-hour StartHack hackathon in St.Gallen.
+It is designed to assist users in navigating the canton of St.Gallen's website through voice commands.
+The bot utilizes Streamlit for user interaction, FastAPI for backend processes, and leverages OpenAI's API for converting speech to text and vice versa. To answer user queries, it combines Retrieval-Augmented Generation (RAG) with GPT-4 for generating relevant and accurate responses.
+The RAG process involves creating embeddings using the Cohere API from HTML website content and employing Chroma for vector database management.
 For more info on the challenge [here the presentation link.](https://www.canva.com/design/DAGAK87nvNg/QTXV33sKVcL7yYzjJrZ7yw/view?utm_content=DAGAK87nvNg&utm_campaign=designshare&utm_medium=link&utm_source=editor)
 
 ## Features
