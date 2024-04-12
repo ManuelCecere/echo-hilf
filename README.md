@@ -33,7 +33,6 @@ pip install -r requirements.txt
 ```
 export OPENAI_API_KEY='your_openai_api_key_here
 ```
-Usage
 To run the voice bot, you need to start both the Streamlit frontend and FastAPI backend servers.
 
 4. Starting the Backend Server
