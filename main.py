@@ -5,7 +5,7 @@ from fastapi import FastAPI
 
 # Set OpenAI key
 openai.api_key = os.environ["OPENAI_KEY"]
-os.environ["COHERE_API_KEY"] = "avvPTkbPSOEpMuEZ7iWEFAsW2yFCFZQuc8EG9kCl"
+os.environ["COHERE_API_KEY"] = ""  # your Cohere API key here
 
 from src.api import chat_router
 import uvicorn
